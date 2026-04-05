@@ -22,8 +22,6 @@ fn window_conf() -> Conf {
 async fn main() {
     let mut ball = Ball::new();
 
-    ball.reset_position();
-
     loop {
         clear_background(BLACK);
 
