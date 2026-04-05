@@ -1,4 +1,4 @@
-mod ui;
+pub mod ui;
 
 use macroquad::{
     color::BLACK,
@@ -6,6 +6,7 @@ use macroquad::{
 };
 
 use crate::{
+    constants,
     entities::{ball::Ball, paddle::Paddle},
     physics,
     types::game_object::GameObject,
@@ -37,6 +38,18 @@ impl Game {
     pub async fn run(&mut self) {
         loop {
             clear_background(BLACK);
+
+            if self.win() {
+                let restart = ui::render_win_screen(self.score_player1 > self.score_player2);
+
+                if restart {
+                    self.restart_game();
+                }
+
+                next_frame().await;
+
+                continue;
+            }
 
             self.update();
             self.draw();
@@ -99,5 +112,17 @@ impl Game {
         self.ball.reset();
         self.player1.reset();
         self.player2.reset();
+    }
+
+    fn win(&self) -> bool {
+        self.score_player1 >= constants::WINNING_SCORE
+            || self.score_player2 >= constants::WINNING_SCORE
+    }
+
+    fn restart_game(&mut self) {
+        self.score_player1 = 0;
+        self.score_player2 = 0;
+
+        self.reset_game_objects();
     }
 }

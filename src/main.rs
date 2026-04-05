@@ -1,3 +1,4 @@
+mod constants;
 mod entities;
 mod game;
 mod physics;
