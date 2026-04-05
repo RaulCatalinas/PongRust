@@ -1,10 +1,12 @@
+mod entities;
+mod types;
+
 use macroquad::{
     main,
-    prelude::{
-        BLACK, BLUE, Conf, DARKGRAY, GREEN, clear_background, draw_line, draw_rectangle, draw_text,
-        next_frame, screen_width,
-    },
+    prelude::{BLACK, Conf, clear_background, next_frame},
 };
+
+use crate::{entities::ball::Ball, types::game_object::GameObject};
 
 fn window_conf() -> Conf {
     Conf {
@@ -18,13 +20,15 @@ fn window_conf() -> Conf {
 
 #[main(window_conf)]
 async fn main() {
+    let mut ball = Ball::new();
+
+    ball.reset_position();
+
     loop {
         clear_background(BLACK);
 
-        draw_line(40.0, 40.0, 100.0, 200.0, 15.0, BLUE);
-        draw_rectangle(screen_width() / 2.0 - 60.0, 100.0, 120.0, 60.0, GREEN);
-
-        draw_text("Hello, Macroquad!", 20.0, 20.0, 30.0, DARKGRAY);
+        ball.update();
+        ball.draw();
 
         next_frame().await
     }
