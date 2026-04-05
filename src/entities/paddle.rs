@@ -10,6 +10,7 @@ use crate::types;
 pub struct Paddle {
     x: f32,
     y: f32,
+    initial_y: f32,
     velocity_y: f32,
     width: f32,
     height: f32,
@@ -33,7 +34,9 @@ impl types::game_object::GameObject for Paddle {
         draw_rectangle(self.x, self.y, self.width, self.height, WHITE);
     }
 
-    fn reset(&mut self) {}
+    fn reset(&mut self) {
+        self.y = self.initial_y;
+    }
 }
 
 impl Paddle {
@@ -57,6 +60,7 @@ impl Paddle {
         Self {
             x,
             y,
+            initial_y: y,
             is_player_one,
             velocity_y: 0.0,
             width: 10.0,
