@@ -25,25 +25,38 @@ impl types::game_object::GameObject for Ball {
         draw_circle(self.x, self.y, self.radius, WHITE);
     }
 
-    fn reset_position(&mut self) {
+    fn reset(&mut self) {
+        let (random_velocity_x, random_velocity_y) = Self::get_random_velocity();
+
         self.x = screen_width() / 2.0;
         self.y = screen_height() / 2.0;
+        self.velocity_x = random_velocity_x;
+        self.velocity_y = random_velocity_y;
     }
 }
 
 impl Ball {
     pub fn new() -> Self {
-        let mut rng = rand::rng();
-
-        let sign_x = if rng.random_bool(0.5) { 1.0 } else { -1.0 };
-        let sign_y = if rng.random_bool(0.5) { 1.0 } else { -1.0 };
+        let (random_velocity_x, random_velocity_y) = Self::get_random_velocity();
 
         Self {
             x: screen_width() / 2.0,
             y: screen_height() / 2.0,
             radius: 10.0,
-            velocity_x: rng.random_range(2.0..=5.0) * sign_x,
-            velocity_y: rng.random_range(2.0..=5.0) * sign_y,
+            velocity_x: random_velocity_x,
+            velocity_y: random_velocity_y,
         }
+    }
+
+    fn get_random_velocity() -> (f32, f32) {
+        let mut rng = rand::rng();
+
+        let sign_x = if rng.random_bool(0.5) { 1.0 } else { -1.0 };
+        let sign_y = if rng.random_bool(0.5) { 1.0 } else { -1.0 };
+
+        (
+            rng.random_range(2.0..=5.0) * sign_x,
+            rng.random_range(2.0..=5.0) * sign_y,
+        )
     }
 }

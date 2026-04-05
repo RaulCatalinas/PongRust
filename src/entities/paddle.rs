@@ -25,7 +25,7 @@ impl types::game_object::GameObject for Paddle {
         draw_rectangle(self.x, self.y, self.width, self.height, WHITE);
     }
 
-    fn reset_position(&mut self) {}
+    fn reset(&mut self) {}
 }
 
 impl Paddle {
