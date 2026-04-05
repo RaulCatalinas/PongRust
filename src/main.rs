@@ -6,7 +6,10 @@ use macroquad::{
     prelude::{BLACK, Conf, clear_background, next_frame},
 };
 
-use crate::{entities::ball::Ball, types::game_object::GameObject};
+use crate::{
+    entities::{ball::Ball, paddle::Paddle},
+    types::game_object::GameObject,
+};
 
 fn window_conf() -> Conf {
     Conf {
@@ -21,9 +24,16 @@ fn window_conf() -> Conf {
 #[main(window_conf)]
 async fn main() {
     let mut ball = Ball::new();
-
+    let mut player1 = Paddle::new(50.0, 250.0, true);
+    let mut player2 = Paddle::new(740.0, 250.0, false);
     loop {
         clear_background(BLACK);
+
+        player1.update();
+        player1.draw();
+
+        player2.update();
+        player2.draw();
 
         ball.update();
         ball.draw();
