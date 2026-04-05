@@ -25,12 +25,6 @@ impl types::game_object::GameObject for Paddle {
         draw_rectangle(self.x, self.y, self.width, self.height, WHITE);
     }
 
-    fn set_velocity_y(&mut self, new_velocity_y: f32) {
-        self.velocity_y = new_velocity_y
-    }
-
-    fn set_velocity_x(&mut self, _: f32) {}
-
     fn reset_position(&mut self) {}
 }
 

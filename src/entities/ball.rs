@@ -25,14 +25,6 @@ impl types::game_object::GameObject for Ball {
         draw_circle(self.x, self.y, self.radius, WHITE);
     }
 
-    fn set_velocity_x(&mut self, new_velocity_x: f32) {
-        self.velocity_x = new_velocity_x;
-    }
-
-    fn set_velocity_y(&mut self, new_velocity_y: f32) {
-        self.velocity_y = new_velocity_y;
-    }
-
     fn reset_position(&mut self) {
         self.x = screen_width() / 2.0;
         self.y = screen_height() / 2.0;
