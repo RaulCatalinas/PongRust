@@ -2,6 +2,7 @@ use macroquad::{
     color::WHITE,
     input::{KeyCode, is_key_down},
     shapes::draw_rectangle,
+    window::screen_height,
 };
 
 use crate::types;
@@ -18,7 +19,14 @@ pub struct Paddle {
 impl types::game_object::GameObject for Paddle {
     fn update(&mut self) {
         self.velocity_y = self.get_input_velocity();
-        self.y += self.velocity_y;
+
+        let next_y = self.y + self.velocity_y;
+        let hits_top = next_y <= 0.0;
+        let hits_bottom = next_y + self.height >= screen_height();
+
+        if !hits_top && !hits_bottom {
+            self.y = next_y;
+        }
     }
 
     fn draw(&self) {
@@ -29,6 +37,22 @@ impl types::game_object::GameObject for Paddle {
 }
 
 impl Paddle {
+    pub fn x(&self) -> f32 {
+        self.x
+    }
+
+    pub fn y(&self) -> f32 {
+        self.y
+    }
+
+    pub fn width(&self) -> f32 {
+        self.width
+    }
+
+    pub fn height(&self) -> f32 {
+        self.height
+    }
+
     pub fn new(x: f32, y: f32, is_player_one: bool) -> Self {
         Self {
             x,

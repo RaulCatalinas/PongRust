@@ -36,6 +36,18 @@ impl types::game_object::GameObject for Ball {
 }
 
 impl Ball {
+    pub fn x(&self) -> f32 {
+        self.x
+    }
+
+    pub fn y(&self) -> f32 {
+        self.y
+    }
+
+    pub fn radius(&self) -> f32 {
+        self.radius
+    }
+
     pub fn new() -> Self {
         let (random_velocity_x, random_velocity_y) = Self::get_random_velocity();
 
@@ -58,5 +70,15 @@ impl Ball {
             rng.random_range(2.0..=5.0) * sign_x,
             rng.random_range(2.0..=5.0) * sign_y,
         )
+    }
+
+    pub fn invert_velocity(&mut self, invert_x: bool, invert_y: bool) {
+        if invert_x {
+            self.velocity_x = -self.velocity_x;
+        }
+
+        if invert_y {
+            self.velocity_y = -self.velocity_y;
+        }
     }
 }

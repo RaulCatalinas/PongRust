@@ -1,15 +1,9 @@
 mod entities;
+mod game;
+mod physics;
 mod types;
 
-use macroquad::{
-    main,
-    prelude::{BLACK, Conf, clear_background, next_frame},
-};
-
-use crate::{
-    entities::{ball::Ball, paddle::Paddle},
-    types::game_object::GameObject,
-};
+use macroquad::{main, window::Conf};
 
 fn window_conf() -> Conf {
     Conf {
@@ -23,22 +17,10 @@ fn window_conf() -> Conf {
 
 #[main(window_conf)]
 async fn main() {
-    let mut ball = Ball::new();
-    let mut player1 = Paddle::new(50.0, 250.0, true);
-    let mut player2 = Paddle::new(740.0, 250.0, false);
+    let mut game = game::Game::new(
+        window_conf().window_width as f32,
+        window_conf().window_height as f32,
+    );
 
-    loop {
-        clear_background(BLACK);
-
-        player1.update();
-        player1.draw();
-
-        player2.update();
-        player2.draw();
-
-        ball.update();
-        ball.draw();
-
-        next_frame().await
-    }
+    game.run().await;
 }
