@@ -26,6 +26,7 @@ async fn main() {
     let mut ball = Ball::new();
     let mut player1 = Paddle::new(50.0, 250.0, true);
     let mut player2 = Paddle::new(740.0, 250.0, false);
+
     loop {
         clear_background(BLACK);
 
