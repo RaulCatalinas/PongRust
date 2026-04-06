@@ -1,9 +1,9 @@
 use macroquad::{
-    color::{BLACK, DARKGRAY, WHITE},
+    color::{BLACK, DARKGRAY, GRAY, WHITE},
     input::{MouseButton, is_mouse_button_pressed, mouse_position},
     shapes::draw_rectangle,
     text::{TextDimensions, draw_text, measure_text},
-    window::{screen_height, screen_width},
+    window::screen_width,
 };
 
 use crate::constants;
@@ -23,35 +23,15 @@ pub fn render_game_scoreboard(current_score_player1: u8, current_score_player2: 
     );
 }
 
-pub fn render_win_screen(win_player1: bool) -> bool {
-    let winner = if win_player1 {
-        "Player 1 Wins!"
-    } else {
-        "Player 2 Wins!"
-    };
-
-    let TextDimensions { width, height, .. } =
-        measure_text(winner, None, constants::WIN_FONT_SIZE as u16, 1.0);
-
-    draw_text(
-        winner,
-        screen_width() / 2.0 - width / 2.0,
-        screen_height() / 2.0 - height / 2.0,
-        constants::WIN_FONT_SIZE,
-        WHITE,
-    );
-
-    draw_button(
-        "Restart",
-        screen_width() / 2.0 - 200.0 / 2.0,
-        screen_height() / 2.0 + 50.0,
-        200.0,
-        50.0,
-        50.0,
-    )
-}
-
-fn draw_button(text: &str, x: f32, y: f32, width: f32, height: f32, font_size: f32) -> bool {
+pub fn draw_button(
+    text: &str,
+    x: f32,
+    y: f32,
+    width: f32,
+    height: f32,
+    font_size: f32,
+    on_click: impl FnOnce(),
+) {
     let (mouse_x, mouse_y) = mouse_position();
 
     let hovered = mouse_x >= x && mouse_x <= x + width && mouse_y >= y && mouse_y <= y + height;
@@ -66,7 +46,6 @@ fn draw_button(text: &str, x: f32, y: f32, width: f32, height: f32, font_size: f
     let text_color = if hovered { BLACK } else { WHITE };
 
     draw_rectangle(x, y, width, height, button_color);
-
     draw_text(
         text,
         x + width / 2.0 - text_width / 2.0,
@@ -75,5 +54,20 @@ fn draw_button(text: &str, x: f32, y: f32, width: f32, height: f32, font_size: f
         text_color,
     );
 
-    hovered && is_mouse_button_pressed(MouseButton::Left)
+    if hovered && is_mouse_button_pressed(MouseButton::Left) {
+        on_click();
+    }
+}
+
+pub fn draw_center_line(window_width: f32, window_height: f32) {
+    let dash_height = 20.0;
+    let gap = 10.0;
+    let x = window_width / 2.0;
+    let margin = 5.0;
+    let mut y = constants::SCORE_FONT_SIZE + gap + margin;
+
+    while y < window_height {
+        draw_rectangle(x - 2.0, y, 4.0, dash_height, GRAY);
+        y += dash_height + gap;
+    }
 }

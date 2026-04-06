@@ -1,0 +1,2 @@
+pub const MAIN_MENU_GAME_NAME_FONT_SIZE: f32 = 90.0;
+pub const MAIN_MENU_BUTTON_FONT_SIZE: f32 = 50.0;
