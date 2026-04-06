@@ -68,13 +68,17 @@ impl Game {
 
         if ball_collision_with_left_wall {
             sfx::play_sound_effect(&self.marked_point);
+
             self.score_player2 += 1;
+
             self.reset_game_objects();
         }
 
         if ball_collision_with_right_wall {
             sfx::play_sound_effect(&self.marked_point);
+
             self.score_player1 += 1;
+
             self.reset_game_objects();
         }
     }
