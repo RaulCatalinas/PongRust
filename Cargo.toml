@@ -3,12 +3,14 @@ name = "pong_rust"
 version = "1.0.0"
 edition = "2024"
 
-[profile.dev]
-opt-level = 1
-
-[profile.dev.package."*"]
-opt-level = 3
-
 [dependencies]
-macroquad = "0.4.14"
+macroquad = {version = "0.4.14", features = ["audio"] }
 rand = "0.10.0"
+
+[profile.release]
+opt-level = 3
+lto = "fat"
+codegen-units = 1
+strip = true
+panic = "abort"
+incremental = false

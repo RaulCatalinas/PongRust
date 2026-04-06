@@ -1,7 +1,9 @@
 mod scenes;
+mod sfx;
 mod ui;
 
 use macroquad::{
+    audio::Sound,
     color::BLACK,
     window::{clear_background, next_frame},
 };
@@ -20,10 +22,13 @@ pub struct Game {
     score_player1: u8,
     score_player2: u8,
     scene: scenes::Scene,
+    ball_bounce_off_the_paddle: Sound,
+    marked_point: Sound,
+    bounce_off_the_walls: Sound,
 }
 
 impl Game {
-    pub fn new(window_width: f32, window_height: f32) -> Self {
+    pub async fn new(window_width: f32, window_height: f32) -> Self {
         Self {
             ball: Ball::new(),
             player1: Paddle::new(50.0, 250.0, true),
@@ -33,6 +38,12 @@ impl Game {
             score_player1: 0,
             score_player2: 0,
             scene: scenes::Scene::MainMenu,
+            ball_bounce_off_the_paddle: sfx::load_sound_effect(
+                "sfx/ball_bounce_off_the_paddle.wav",
+            )
+            .await,
+            marked_point: sfx::load_sound_effect("sfx/marked_point.wav").await,
+            bounce_off_the_walls: sfx::load_sound_effect("sfx/bounce_off_the_walls.wav").await,
         }
     }
 

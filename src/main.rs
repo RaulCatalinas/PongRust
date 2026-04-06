@@ -21,7 +21,8 @@ async fn main() {
     let mut game = game::Game::new(
         window_conf().window_width as f32,
         window_conf().window_height as f32,
-    );
+    )
+    .await;
 
     game.run().await;
 }

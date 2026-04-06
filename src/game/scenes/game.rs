@@ -2,7 +2,7 @@ use macroquad::window::Conf;
 
 use crate::{
     constants,
-    game::{Game, scenes::Scene, ui},
+    game::{Game, scenes::Scene, sfx, ui},
     physics,
     types::game_object::GameObject,
     window_conf,
@@ -57,19 +57,23 @@ impl Game {
         );
 
         if ball_collision_with_player1 || ball_collision_with_player2 {
+            sfx::play_sound_effect(&self.ball_bounce_off_the_paddle);
             self.ball.invert_velocity(true, false);
         }
 
         if ball_collision_with_wall_y {
+            sfx::play_sound_effect(&self.bounce_off_the_walls);
             self.ball.invert_velocity(false, true);
         }
 
         if ball_collision_with_left_wall {
+            sfx::play_sound_effect(&self.marked_point);
             self.score_player2 += 1;
             self.reset_game_objects();
         }
 
         if ball_collision_with_right_wall {
+            sfx::play_sound_effect(&self.marked_point);
             self.score_player1 += 1;
             self.reset_game_objects();
         }
