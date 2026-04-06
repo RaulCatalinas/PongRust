@@ -1,9 +1,9 @@
-use macroquad::audio::{PlaySoundParams, Sound, load_sound, play_sound};
+use macroquad::audio::{PlaySoundParams, Sound, load_sound_from_bytes, play_sound};
 
-pub async fn load_sound_effect(path: &str) -> Sound {
-    load_sound(path)
+pub async fn load_sound_from_embedded(bytes: &[u8]) -> Sound {
+    load_sound_from_bytes(bytes)
         .await
-        .expect(&format!("Failed to load sound effect: {}", path))
+        .expect("Failed to load sound effect")
 }
 
 pub fn play_sound_effect(sound: &Sound) {

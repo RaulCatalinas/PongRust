@@ -1,6 +1,9 @@
+#![windows_subsystem = "windows"]
+
 mod constants;
 mod entities;
 mod game;
+mod macros;
 mod physics;
 mod types;
 

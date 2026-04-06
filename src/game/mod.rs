@@ -11,6 +11,7 @@ use macroquad::{
 use crate::{
     entities::{ball::Ball, paddle::Paddle},
     game::scenes::Scene,
+    load_sfx,
 };
 
 pub struct Game {
@@ -38,12 +39,9 @@ impl Game {
             score_player1: 0,
             score_player2: 0,
             scene: scenes::Scene::MainMenu,
-            ball_bounce_off_the_paddle: sfx::load_sound_effect(
-                "sfx/ball_bounce_off_the_paddle.wav",
-            )
-            .await,
-            marked_point: sfx::load_sound_effect("sfx/marked_point.wav").await,
-            bounce_off_the_walls: sfx::load_sound_effect("sfx/bounce_off_the_walls.wav").await,
+            ball_bounce_off_the_paddle: load_sfx!("../../sfx/ball_bounce_off_the_paddle.wav"),
+            marked_point: load_sfx!("../../sfx/marked_point.wav"),
+            bounce_off_the_walls: load_sfx!("../../sfx/bounce_off_the_walls.wav"),
         }
     }
 
