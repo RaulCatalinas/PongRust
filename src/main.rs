@@ -1,13 +1,16 @@
 #![windows_subsystem = "windows"]
 
 mod constants;
+mod engine;
 mod entities;
 mod game;
 mod macros;
 mod physics;
 mod types;
 
-use macroquad::{main, window::Conf};
+use macroquad::window::Conf;
+
+use crate::engine::window::WindowConfig;
 
 fn window_conf() -> Conf {
     Conf {
@@ -19,13 +22,9 @@ fn window_conf() -> Conf {
     }
 }
 
-#[main(window_conf)]
-async fn main() {
-    let mut game = game::Game::new(
-        window_conf().window_width as f32,
-        window_conf().window_height as f32,
-    )
-    .await;
-
-    game.run().await;
+fn main() {
+    engine::window::create_window(WindowConfig {
+        title: String::from("Pong in Rust"),
+        ..Default::default()
+    });
 }
