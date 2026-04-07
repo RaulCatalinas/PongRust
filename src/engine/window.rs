@@ -1,9 +1,15 @@
+use std::sync::Arc;
+
 use tao::{
     dpi::{LogicalSize, PhysicalPosition},
     event::{Event, WindowEvent},
     event_loop::{ControlFlow, EventLoop},
     window::WindowBuilder,
 };
+
+use pollster;
+
+use crate::engine::renderer::Renderer;
 
 pub struct WindowConfig {
     pub title: String,
@@ -33,21 +39,27 @@ pub fn create_window(window_config: WindowConfig) {
         .primary_monitor()
         .expect("Error getting monitor size")
         .size();
-    let window = WindowBuilder::new()
-        .with_title(window_config.title)
-        .with_inner_size(LogicalSize::new(window_config.width, window_config.height))
-        .with_resizable(window_config.resizable)
-        .with_maximizable(window_config.maximizable)
-        .with_position(PhysicalPosition::new(
-            (monitor_size.width / 2).saturating_sub(window_config.width / 2),
-            (monitor_size.height / 2).saturating_sub(window_config.height / 2),
-        ))
-        .build(&event_loop)
-        .unwrap();
+    let window = Arc::new(
+        WindowBuilder::new()
+            .with_title(window_config.title)
+            .with_inner_size(LogicalSize::new(window_config.width, window_config.height))
+            .with_resizable(window_config.resizable)
+            .with_maximizable(window_config.maximizable)
+            .with_position(PhysicalPosition::new(
+                (monitor_size.width / 2).saturating_sub(window_config.width / 2),
+                (monitor_size.height / 2).saturating_sub(window_config.height / 2),
+            ))
+            .build(&event_loop)
+            .unwrap(),
+    );
+
+    let mut renderer = pollster::block_on(Renderer::new(
+        Arc::clone(&window),
+        window_config.width,
+        window_config.height,
+    ));
 
     event_loop.run(move |event, _, control_flow| {
-        // ControlFlow::Poll continuously runs the event loop, even if the OS hasn't
-        // dispatched any events. This is ideal for games and similar applications.
         *control_flow = window_config.control_flow;
 
         match event {
@@ -55,25 +67,13 @@ pub fn create_window(window_config: WindowConfig) {
                 event: WindowEvent::CloseRequested,
                 ..
             } => {
-                println!("The close button was pressed; stopping");
-                *control_flow = ControlFlow::Exit
+                *control_flow = ControlFlow::Exit;
             }
             Event::MainEventsCleared => {
-                // Application update code.
-
-                // Queue a RedrawRequested event.
-                //
-                // You only need to call this if you've determined that you need to redraw, in
-                // applications which do not always need to. Applications that redraw continuously
-                // can just render here instead.
                 window.request_redraw();
             }
             Event::RedrawRequested(_) => {
-                // Redraw the application.
-                //
-                // It's preferable for applications that do not render continuously to render in
-                // this event rather than in MainEventsCleared, since rendering in here allows
-                // the program to gracefully handle redraws requested by the OS.
+                let _ = renderer.render();
             }
             _ => (),
         }
