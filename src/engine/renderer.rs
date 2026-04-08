@@ -8,7 +8,7 @@ use wgpu::{
     SurfaceConfiguration, SurfaceError, SurfaceTarget, TextureUsages, TextureViewDescriptor,
 };
 
-use super::text;
+use super::ui::text;
 
 pub struct Renderer {
     surface: Surface<'static>,

@@ -28,7 +28,17 @@ impl Game for PongGame {
     }
 
     fn update(&mut self) {
-        engine::text::draw("Hello World", 0.0, 0.0, 20.0);
+        engine::ui::text::draw("Hello World", 0.0, 0.0, 20.0);
+        engine::ui::buttons::create_button(engine::ui::buttons::ButtonConfig {
+            text: "Click Me",
+            x: 350.0,
+            y: 280.0,
+            width: 100.0,
+            height: 40.0,
+            on_click: || {
+                println!("Button clicked!");
+            },
+        });
     }
 }
 

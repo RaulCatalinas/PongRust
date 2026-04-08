@@ -1,9 +1,9 @@
-pub mod buttons;
+pub mod cursor;
 pub mod game;
 pub mod game_builder;
 pub mod input;
 mod renderer;
-pub mod text;
+pub mod ui;
 pub mod window;
 //pub mod entities;
 //pub mod physics;

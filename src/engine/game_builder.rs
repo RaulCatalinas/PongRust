@@ -5,7 +5,7 @@ use tao::{
     event_loop::ControlFlow,
 };
 
-use crate::engine::{input, text};
+use crate::engine::{cursor, input, ui::text};
 
 use super::{
     game::Game,
@@ -68,6 +68,8 @@ impl GameBuilder {
                 },
                 Event::MainEventsCleared => {
                     game.update();
+                    window.set_cursor_icon(cursor::get());
+                    cursor::reset();
                     window.request_redraw();
                     input::flush();
                 }
