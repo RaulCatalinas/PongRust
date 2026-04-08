@@ -1,5 +1,3 @@
-#![windows_subsystem = "windows"]
-
 mod constants;
 mod engine;
 mod entities;
@@ -10,7 +8,7 @@ mod types;
 
 use macroquad::window::Conf;
 
-use crate::engine::window::WindowConfig;
+use crate::engine::{game::Game, window::WindowConfig};
 
 fn window_conf() -> Conf {
     Conf {
@@ -22,9 +20,25 @@ fn window_conf() -> Conf {
     }
 }
 
+struct PongGame;
+
+impl Game for PongGame {
+    fn start(&mut self) {
+        println!("Game started!");
+    }
+
+    fn update(&mut self) {
+        // Aquí iría la lógica de actualización del juego
+    }
+}
+
 fn main() {
-    engine::window::create_window(WindowConfig {
-        title: String::from("Pong in Rust"),
-        ..Default::default()
-    });
+    engine::app::App::new()
+        .with_window(WindowConfig {
+            title: String::from("Pong in Rust"),
+            resizable: false,
+            maximizable: false,
+            ..Default::default()
+        })
+        .run(PongGame);
 }

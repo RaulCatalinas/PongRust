@@ -2,7 +2,7 @@ use std::sync::Arc;
 
 use tao::window::Window;
 use wgpu::{
-    Backends, Color, CommandEncoderDescriptor, Device, DeviceDescriptor, Features, Instance,
+    Backends, Color, CommandEncoderDescriptor, Device, DeviceDescriptor, Instance,
     InstanceDescriptor, LoadOp, Operations, PowerPreference, PresentMode, Queue,
     RenderPassColorAttachment, RenderPassDescriptor, RequestAdapterOptions, StoreOp, Surface,
     SurfaceConfiguration, SurfaceError, SurfaceTarget, TextureUsages, TextureViewDescriptor,
