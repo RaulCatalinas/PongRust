@@ -5,6 +5,8 @@ use tao::{
     event_loop::ControlFlow,
 };
 
+use crate::engine::text;
+
 use super::{
     game::Game,
     renderer::Renderer,
@@ -47,6 +49,7 @@ impl GameBuilder {
                     event: WindowEvent::CloseRequested,
                     ..
                 } => {
+                    text::shutdown();
                     *control_flow = ControlFlow::Exit;
                 }
                 Event::MainEventsCleared => {

@@ -28,7 +28,7 @@ impl Game for PongGame {
     }
 
     fn update(&mut self) {
-        // Aquí iría la lógica de actualización del juego
+        engine::text::draw("Hello World", 0.0, 0.0, 20.0);
     }
 }
 

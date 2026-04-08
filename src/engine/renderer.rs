@@ -8,28 +8,27 @@ use wgpu::{
     SurfaceConfiguration, SurfaceError, SurfaceTarget, TextureUsages, TextureViewDescriptor,
 };
 
+use super::text;
+
 pub struct Renderer {
     surface: Surface<'static>,
     device: Device,
     queue: Queue,
     config: SurfaceConfiguration,
-    window: Arc<Window>,
+    _window: Arc<Window>,
 }
 
 impl Renderer {
     pub async fn new(window: Arc<Window>, width: u32, height: u32) -> Self {
-        // 1. Instance — detecta backends disponibles
         let instance = Instance::new(InstanceDescriptor {
             backends: Backends::all(),
             ..Default::default()
         });
 
-        // 2. Surface — vinculada a la ventana de tao
         let surface = instance
             .create_surface(SurfaceTarget::Window(Box::new(Arc::clone(&window))))
             .unwrap();
 
-        // 3. Adapter — elige la GPU más adecuada
         let adapter = instance
             .request_adapter(&RequestAdapterOptions {
                 power_preference: PowerPreference::HighPerformance,
@@ -39,16 +38,11 @@ impl Renderer {
             .await
             .unwrap();
 
-        // 4. Device + Queue
         let (device, queue) = adapter
-            .request_device(
-                &DeviceDescriptor::default(),
-                None, // trace path
-            )
+            .request_device(&DeviceDescriptor::default(), None)
             .await
             .unwrap();
 
-        // 5. SurfaceConfig — formato y tamaño de la surface
         let surface_caps = surface.get_capabilities(&adapter);
         let surface_format = surface_caps
             .formats
@@ -62,7 +56,7 @@ impl Renderer {
             format: surface_format,
             width,
             height,
-            present_mode: PresentMode::Fifo, // VSync
+            present_mode: PresentMode::Fifo,
             alpha_mode: surface_caps.alpha_modes[0],
             view_formats: vec![],
             desired_maximum_frame_latency: 2,
@@ -70,12 +64,14 @@ impl Renderer {
 
         surface.configure(&device, &config);
 
+        text::init(&device, &queue, surface_format);
+
         Self {
             surface,
             device,
             queue,
             config,
-            window,
+            _window: window,
         }
     }
 
@@ -89,22 +85,26 @@ impl Renderer {
     }
 
     pub fn render(&mut self) -> Result<(), SurfaceError> {
-        // Pide el siguiente frame
         let output = self.surface.get_current_texture()?;
         let view = output
             .texture
             .create_view(&TextureViewDescriptor::default());
 
-        // Graba comandos GPU
+        text::prepare(
+            &self.device,
+            &self.queue,
+            self.config.width,
+            self.config.height,
+        );
+
         let mut encoder = self
             .device
             .create_command_encoder(&CommandEncoderDescriptor {
                 label: Some("Render Encoder"),
             });
 
-        // Render pass — por ahora solo limpia la pantalla con un color
         {
-            let _render_pass = encoder.begin_render_pass(&RenderPassDescriptor {
+            let mut render_pass = encoder.begin_render_pass(&RenderPassDescriptor {
                 label: Some("Render Pass"),
                 color_attachments: &[Some(RenderPassColorAttachment {
                     view: &view,
@@ -118,7 +118,11 @@ impl Renderer {
                 timestamp_writes: None,
                 occlusion_query_set: None,
             });
+
+            text::render_in_pass(&mut render_pass);
         }
+
+        text::clear();
 
         self.queue.submit(std::iter::once(encoder.finish()));
         output.present();
