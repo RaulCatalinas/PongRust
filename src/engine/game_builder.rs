@@ -1,11 +1,11 @@
 use pollster::block_on;
 use std::sync::Arc;
 use tao::{
-    event::{Event, WindowEvent},
+    event::{ElementState, Event, MouseButton, WindowEvent},
     event_loop::ControlFlow,
 };
 
-use crate::engine::text;
+use crate::engine::{input, text};
 
 use super::{
     game::Game,
@@ -45,16 +45,31 @@ impl GameBuilder {
             *control_flow = ControlFlow::Poll;
 
             match event {
-                Event::WindowEvent {
-                    event: WindowEvent::CloseRequested,
-                    ..
-                } => {
-                    text::shutdown();
-                    *control_flow = ControlFlow::Exit;
-                }
+                Event::WindowEvent { event, .. } => match event {
+                    WindowEvent::CloseRequested => {
+                        text::shutdown();
+                        *control_flow = ControlFlow::Exit;
+                    }
+                    WindowEvent::CursorMoved { position, .. } => {
+                        input::mouse::on_moved(position.x as f32, position.y as f32);
+                    }
+                    WindowEvent::MouseInput { state, button, .. } => {
+                        if button == MouseButton::Left {
+                            input::mouse::on_button(state == ElementState::Pressed);
+                        }
+                    }
+                    WindowEvent::KeyboardInput { event, .. } => {
+                        input::keyboard::on_key(
+                            event.physical_key,
+                            event.state == ElementState::Pressed,
+                        );
+                    }
+                    _ => (),
+                },
                 Event::MainEventsCleared => {
                     game.update();
                     window.request_redraw();
+                    input::flush();
                 }
                 Event::RedrawRequested(_) => {
                     let _ = renderer.render();
