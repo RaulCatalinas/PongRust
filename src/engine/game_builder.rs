@@ -1,7 +1,9 @@
 use pollster::block_on;
 use std::sync::Arc;
-use tao::event::{Event, WindowEvent};
-use tao::event_loop::ControlFlow;
+use tao::{
+    event::{Event, WindowEvent},
+    event_loop::ControlFlow,
+};
 
 use super::{
     game::Game,
@@ -9,11 +11,11 @@ use super::{
     window::{WindowConfig, WindowHandle, create_window},
 };
 
-pub struct App {
+pub struct GameBuilder {
     window_config: Option<WindowConfig>,
 }
 
-impl App {
+impl GameBuilder {
     pub fn new() -> Self {
         Self {
             window_config: None,
@@ -28,8 +30,7 @@ impl App {
     pub fn run(self, mut game: impl Game + 'static) {
         let window_config = self
             .window_config
-            .expect("Debes llamar .with_window() antes de .run()");
-
+            .expect("You must call .with_window() before .run()");
         let width = window_config.width;
         let height = window_config.height;
         let WindowHandle { window, event_loop } = create_window(window_config);

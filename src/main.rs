@@ -33,7 +33,7 @@ impl Game for PongGame {
 }
 
 fn main() {
-    engine::app::App::new()
+    engine::game_builder::GameBuilder::new()
         .with_window(WindowConfig {
             title: String::from("Pong in Rust"),
             resizable: false,
